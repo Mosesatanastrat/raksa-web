@@ -1,0 +1,275 @@
+<div class="container-fluid">
+  <div class="row d-flex align-content-center justify-content-center apitest">
+    <div class="col-md-7 login-form">
+      <div class="position-relative">
+        <div class="back-button"></div>
+        <!-- signup form -->
+        <form
+          class="needs-validation"
+          (ngSubmit)="createProfileInRegistration()"
+          [formGroup]="signUpForm"
+          autocomplete="off"
+          *ngIf="formStep == 1"
+        >
+          <label
+            for="Sign Up"
+            class="form-heading d-flex justify-content-center"
+            >Basic Details</label
+          >
+
+          <div class="mb-2">
+            <label for="firstName" class="form-fields-label">First Name</label>
+            <input
+              type="text"
+              id="firstName"
+              formControlName="firstName"
+              class="form-control"
+              placeholder="Enter your first name"
+            />
+            <div
+              *ngIf="profileSubmitted && signUpFrm['firstName'].errors"
+              class="invalid-feedback"
+            >
+              <span *ngIf="signUpFrm['firstName'].errors['required']"
+                >First Name can't be empty</span
+              >
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label for="gender" class="form-fields-label">Gender</label>
+            <select
+              id="gender"
+              formControlName="gender"
+              class="form-control-select-box select-box"
+            >
+              <option value="null" disabled selected>Select your gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">other</option>
+            </select>
+            <div
+              *ngIf="profileSubmitted && signUpFrm['gender'].errors"
+              class="invalid-feedback"
+            >
+              <span *ngIf="signUpFrm['gender'].errors['required']"
+                >Gender can't be empty</span
+              >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-2">
+                <label for="dateOfBirth" class="form-fields-label"
+                  >Birth Date</label
+                >
+                <div class="input-group clockpicker mt-1">
+                  <input
+                    ngbDatepicker
+                    readonly
+                    class="form-control"
+                    id="dateOfBirth"
+                    formControlName="dateOfBirth"
+                    #dateOfBirth="ngbDatepicker"
+                    style="font-size: 0.7rem"
+                  />
+
+                  <div
+                    class="input-group-append"
+                    (click)="dateOfBirth.toggle()"
+                  >
+                    <span class="input-group-text">
+                      <img src="../assets/images/calendar.png" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-2">
+                <label for="dateOfBirth" class="form-fields-label"
+                  >Birth Time</label
+                >
+                <div class="mb-3">
+                  <app-custome-time-picker
+                    [time]="signUpForm.get('birthTime').value"
+                    (timeChange)="signUpForm.get('birthTime').setValue($event)"
+                  ></app-custome-time-picker>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- birth place -->
+          <div class="mb-2">
+            <label for="birthPlace" class="form-fields-label"
+              >Birth Place</label
+            >
+            <ng-select
+              [items]="movies$ | async"
+              bindLabel="description"
+              [trackByFn]="trackByFn"
+              [minTermLength]="minLengthTerm"
+              [loading]="moviesLoading"
+              typeToSearchText="Please enter {{
+                minLengthTerm
+              }} or more characters"
+              [typeahead]="moviesInput$"
+              [(ngModel)]="selectedMovie"
+              formControlName="birthPlace"
+              [virtualScroll]="true"
+              class="custom"
+            >
+            </ng-select>
+            <div
+              *ngIf="profileSubmitted && signUpFrm['birthPlace'].errors"
+              class="invalid-feedback"
+            >
+              <span *ngIf="signUpFrm['birthPlace'].errors['required']"
+                >Birth Place can't be empty</span
+              >
+            </div>
+          </div>
+
+          <!-- <div class="mb-2">
+            <label for="maritialStatus" class="form-fields-label"
+              >Maritial Status</label
+            >
+            <select
+              id="maritialStatus"
+              formControlName="maritialStatus"
+              class="form-control-select-box select-box"
+              [ngClass]="{
+                'is-invalid':
+                  signUpFormSubmitted && signUpFrm['maritialStatus'].errors
+              }"
+            >
+              <option value="null" disabled selected>Select your status</option>
+              <option value="married">Married</option>
+              <option value="bachlore">Bachlore</option>
+              <option value="bachelorette">Bachelorette</option>
+            </select>
+            <div
+              *ngIf="profileSubmitted && signUpFrm['maritialStatus'].errors"
+              class="invalid-feedback"
+            >
+              <span *ngIf="signUpFrm['maritialStatus'].errors['required']"
+                >Gender can't be empty</span
+              >
+            </div>
+          </div> -->
+
+          <div class="d-flex justify-content-center">
+            <button
+              type="submit"
+              id="sign-in-button"
+              class="btn gradient-button"
+              [disabled]="signUpForm.invalid"
+            >
+              <span>Submit</span>
+              <i
+                *ngIf="!signUpFormSubmitted"
+                class="bx bx-right-arrow-alt align-middle ms-1"
+              ></i>
+              <i
+                *ngIf="signUpFormSubmitted"
+                class="bx bx-loader bx-spin align-middle ms-1"
+              ></i>
+            </button>
+          </div>
+        </form>
+        <!-- Select Category -->
+        <form
+          class="needs-validation"
+          (ngSubmit)="selectCategory()"
+          [formGroup]="categoryForm"
+          autocomplete="off"
+          *ngIf="formStep == 2"
+        >
+          <label
+            for="Sign Up"
+            class="form-heading d-flex justify-content-center"
+            >Select Category</label
+          >
+
+          <div class="mb-2">
+            <label for="category" class="form-fields-label">Category</label>
+            <select
+              id="category"
+              formControlName="category"
+              class="form-control-select-box select-box"
+            >
+              <option value="null" disabled selected>Select Category</option>
+              <option value="self_awareness">Self-Awareness</option>
+              <option value="family">Family</option>
+              <option value="wealth">Wealth</option>
+              <option value="health">Health</option>
+              <option value="numerology">Numerology</option>
+              <option value="travel">Travel</option>
+              <option value="business">Business</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button
+              type="submit"
+              id="sign-in-button"
+              class="btn gradient-button"
+              [disabled]="categoryForm.invalid"
+            >
+              <span>Submit</span>
+            </button>
+          </div>
+        </form>
+        <!-- Questions And Promt -->
+        <div class="needs-validation" *ngIf="formStep == 3">
+          <label
+            for="summary"
+            class="form-heading d-flex justify-content-center"
+            >{{ question }}</label
+          >
+
+          <textarea
+            id="summary"
+            class="form-control"
+            [(ngModel)]="answerText"
+          ></textarea>
+          <div class="d-flex justify-content-between mt-5">
+            <button
+              type="submit"
+              id="sign-in-button"
+              class="btn gradient-button"
+              (click)="getPreviousQuestion()"
+            >
+              <span>Previous</span>
+            </button>
+            <button
+              type="submit"
+              id="sign-in-button"
+              class="btn gradient-button"
+              (click)="getAnswer()"
+            >
+              <span>Submit</span>
+            </button>
+            <button
+              type="submit"
+              id="sign-in-button"
+              class="btn gradient-button"
+              (click)="getNextQuestion()"
+            >
+              <span>Next</span>
+            </button>
+          </div>
+          <div class="d-flex justify-content-between mt-5">
+            <button
+              type="submit"
+              id="sign-in-button"
+              class="btn gradient-button"
+              (click)="backToCategory()"
+            >
+              <span>Back To Category</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
